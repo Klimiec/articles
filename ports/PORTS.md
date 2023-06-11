@@ -7,7 +7,7 @@ To domena, czyli klient interakcji definiuje kontrakt, do którego muszą dostos
 
 ![Integration Details](images/driven_ports.png)
 
-Porty mogą być używane również po lewej stronie hexagonu (Primary/Driving Ports). W teorii zabezpieczają one logikę biznesową przez niechcianymi zależnościami od strony adapterów wejściowych, które ją wołają, ale czy na pewno? Przecież nic nie stoi na przeszkodzie, aby port zdefiniować tak, aby zwracał np. ResponseEntity oczekiwany przez REST Controller.
+Porty mogą być używane również po lewej stronie hexagonu (Primary/Driving Ports). W teorii zabezpieczają one logikę biznesową przed niechcianymi zależnościami ze strony adapterów wejściowych, które ją wołają, ale czy na pewno? Przecież nic nie stoi na przeszkodzie, aby port zdefiniować tak, aby zwracał np. ResponseEntity oczekiwany przez REST Controller.
 
 Czy użycie portów podnosi testowalność?
 To czy na poziomie testu integracyjnego dla na przykład REST Controllera (@WebMvcTest) użyję referencji do portu czy konkretnej implementacji niewiele zmienia.
@@ -29,7 +29,7 @@ Ważne, by pilnować, aby obiekty zdefiniowane przez warstwę adapterów wejści
 ```
 
 
-W moim przypadków większość use casów wywoływana jest przez REST API dlatego dodatkowo sprawdzam, czy metody zdefiniowane w warstwie application nie mają zależności do ResponseEntity.
+W moim przypadków większość use casów wywoływana jest przez REST API dlatego dodatkowo sprawdzam, czy metody zdefiniowane w warstwie application nie zwracają typu ResponseEntity.
 
 ```kotlin
     @ArchTest
@@ -111,7 +111,7 @@ Poniżej przykłady dobrych i złych nazw metod w portach.
 | This port is for getting client orders IDs     |```getOrderIdsFor(clientId: ClientId)``` |```fetch(clientId: ClientId)```|
 | This port is for publishing updated product description |```publish(event: ProductDescriptionUpdated)```|```send(event: ProductDescriptionUpdated)```|
 | This port is for notifying subscribers about sell |```notifyAboutSell(clients: List<ClientId>)```|```notify(clients: List<ClientId>)```|
-| This port is for sending message to client about order delay |```notifyClientAboutOrderDelay(orderId: OrderId, clientId: ClientId)```|``` sendMessage(orderId: OrderId, clientId: ClientId)```|
+| This port is for sending message to client about order delay |```notifyAboutOrderDelay(orderId: OrderId, clientId: ClientId)```|``` sendMessage(orderId: OrderId, clientId: ClientId)```|
 
 
 #### Nazwa Referencji
@@ -126,6 +126,6 @@ Rereferencja do portu powinna być zawsze taka sama jak nazwa portu.
 |This port is for getting client orders IDs|<pre> interface GetOrderIds {<br> &emsp;&emsp;fun getOrderIdsFor(clientId: ClientId): List[OrderId]<br> } </pre>|
 |This port is for publishing updated product description|<pre> interface PublishProductDescriptionUpdated {<br> &emsp;&emsp;fun publish(event: ProductDescriptionUpdated): Void<br> } </pre>|
 |This port is for notifying subscribers about sell|<pre> interface NotifySubscribers {<br> &emsp;&emsp;fun notifyAboutSell(clients: List[ClientId]): Void<br> } </pre>|
-|This port is for sending message to client about order delay|<pre> interface SendOrderStatus {<br> &emsp;&emsp;fun notifyClientAboutOrderDelay(orderId: OrderId, clientId: ClientId): Void<br> } </pre>|
+|This port is for sending message to client about order delay|<pre> interface SendOrderStatus {<br> &emsp;&emsp;fun notifyAboutOrderDelay(orderId: OrderId, clientId: ClientId): Void<br> } </pre>|
 	
 	
